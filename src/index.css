@@ -12,7 +12,7 @@
 }
 
 /* Custom scrollbar styles */
-.scrollbar::-webkit-scrolbar {
+.scrollbar::-webkit-scrollbar {
   width: 3px;
   height: 3px;
 }
@@ -28,7 +28,7 @@
 
 @layer base {
   html {
-    font-family: "Popins", sans-serif;
+    font-family: "Poppins", sans-serif;
   }
 
   body {

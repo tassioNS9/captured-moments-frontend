@@ -1,11 +1,20 @@
 import { Login } from "./pages/Auth/Login";
-
+import { Home } from "./pages/Home/Home";
+Login;
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 const App = () => {
   return (
-    <>
-      <Login />
-      <div className="font-bold text-red-500">Hello Vite + React</div>
-    </>
+    <Router>
+      <Routes>
+        <Route path="/home" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </Router>
   );
 };
 
