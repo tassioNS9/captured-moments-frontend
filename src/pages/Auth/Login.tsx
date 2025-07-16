@@ -1,7 +1,9 @@
 import { type FormEvent, useState } from "react";
 import { PasswordInput } from "../../components/Input/PasswordInput";
 import { validateEmail } from "../../utils/helpers";
+import { axiosInstance } from "../../api/axiosInstance";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export const Login = () => {
   const [email, setEmail] = useState<string>("");
@@ -24,6 +26,30 @@ export const Login = () => {
     }
 
     setError("");
+
+    try {
+      const response = await axiosInstance.post("/login", {
+        email: email,
+        password: password,
+      });
+
+      if (response.data && response.data.accessToken) {
+        localStorage.setItem("cm:token", response.data.accessToken);
+        navigate("/home");
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.message
+        ) {
+          setError(error.response.data.message);
+        } else {
+          setError("An unexpected error ocurred. Please try again.");
+        }
+      }
+    }
   };
 
   return (

@@ -1,4 +1,5 @@
 import { Login } from "./pages/Auth/Login";
+import { SignUp } from "./pages/Auth/SignUp";
 import { Home } from "./pages/Home/Home";
 Login;
 import {
@@ -13,6 +14,7 @@ const App = () => {
       <Routes>
         <Route path="/home" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
       </Routes>
     </Router>
   );
