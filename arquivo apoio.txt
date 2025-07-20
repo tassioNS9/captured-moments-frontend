@@ -2,3 +2,16 @@ Instalação Tawillind
 
 npm install -D tailwindcss postcss autoprefixer
 npx tailwindcss init -p
+
+npm i date-fns --> para tratar as datas
+
+ No backend usado a lib
+ npm i @fastify/static --> para a questao do servidor estático para as imagens
+
+ npm i react-toastify --> para aviso 
+
+ npm i react-modal --> Para modais prontos
+
+ npm i --save-dev @types/react-modal --> para typescript do modal
+
+npm i react-day-picker --> instalação de lib para utlizar calendarios no react
