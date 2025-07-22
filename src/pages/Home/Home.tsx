@@ -140,7 +140,13 @@ export const Home = () => {
         ariaHideApp={false}
         className="model-box"
       >
-        <AddEditTravelMoment />
+        <AddEditTravelMoment
+          type={openAddEditModal.type}
+          onClose={() => {
+            setOpenAddEditModal({ isShow: false, type: "add", data: null });
+          }}
+          getAllMoments={() => getAllCapturedMoments()}
+        />
       </Modal>
 
       <button
