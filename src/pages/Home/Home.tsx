@@ -10,7 +10,9 @@ import Modal from "react-modal";
 import { MdAdd } from "react-icons/md";
 import { AddEditTravelMoment } from "./AddEditTravelMoment";
 import { ViewTravelMoment } from "./ViewTravelMoment";
-
+import { DateFilter } from "../../components/Input/DateFilter";
+import type { DateRange } from "react-day-picker";
+import EmptyImg from "../../assets/empty-memories.svg";
 interface MomentsProps {
   id: string;
   imageUrl: string;
@@ -31,6 +33,7 @@ interface ModalProps {
 export const Home = () => {
   const [userInfo, setUserInfo] = useState(null);
   const [allMoments, setAllMoments] = useState<MomentsProps[]>([]);
+  const [dateRage, setDateRage] = useState<DateRange | undefined>();
   const [openAddEditModal, setOpenAddEditModal] = useState<ModalProps>({
     isShow: false,
     type: "add",
@@ -58,6 +61,61 @@ export const Home = () => {
         }
       }
     }
+  };
+
+  // Função de deeleção de um momento
+  const handleDeleteCapturedMoment = async (data: MomentsProps | null) => {
+    const momentId = data?.id;
+    console.log(momentId, "momentId");
+
+    try {
+      const response = await axiosInstance.delete(`/delete-moment/${momentId}`);
+
+      if (response.data) {
+        toast.success("Moment Deleted Successfuly");
+        setOpenViewModal((prevState) => ({ ...prevState, isShow: false }));
+        getAllCapturedMoments();
+      }
+    } catch (error) {
+      console.log("An unexpected error occurred. Please try again.", error);
+    }
+  };
+
+  // Filtro de momentos capturados por dia
+  const filterMomentsByDate = async (newSelected: DateRange | undefined) => {
+    try {
+      const startDate = newSelected?.from
+        ? new Date(newSelected?.from).getTime()
+        : null;
+      const endDate = newSelected?.to
+        ? new Date(newSelected?.to).getTime()
+        : null;
+
+      if (startDate && endDate) {
+        const response = await axiosInstance.get("registered-moment/filter", {
+          params: { startDate, endDate },
+        });
+
+        if (response.data.moment) {
+          setAllMoments(response.data.moment);
+        }
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.message
+        ) {
+          console.log(error.response.data.message);
+        }
+      }
+    }
+  };
+
+  const handleDaySelected = (newSelected: DateRange | undefined) => {
+    setDateRage(newSelected);
+    filterMomentsByDate(newSelected);
   };
 
   // Pegar momentos registrados do usuário
@@ -115,29 +173,35 @@ export const Home = () => {
       <main className="container mx-auto py-10">
         <div className="flex gap-7">
           <section className="flex-1">
-            <div className="grid grid-cols-2 gap-4">
-              {/* CARD - MOMENT */}
-              {allMoments.map((moment) => (
-                <CapturedMomentCard
-                  key={moment.id}
-                  imageUrl={moment.imageUrl}
-                  title={moment.title}
-                  story={moment.story}
-                  date={moment.visitedDate}
-                  visitedLocation={moment.visitedLocation}
-                  isFavorite={moment.isFavorite}
-                  onFavoriteClick={() => updateIsFavorite(moment)}
-                  onHandleViewStory={() => handleViewStory(moment)}
-                />
-              ))}
-            </div>
-            {/* <EmptyCard
-              imgSrc={FlorestaImg}
-              message="Begin your first Travel Story! Click the 'Add' button to capture your thoughts, ideas, and memories. Let`s get started!"
-            /> */}
+            {allMoments.length > 0 ? (
+              <div className="grid grid-cols-2 gap-4">
+                {/* CARD - MOMENT */}
+                {allMoments.map((moment) => (
+                  <CapturedMomentCard
+                    key={moment.id}
+                    imageUrl={moment.imageUrl}
+                    title={moment.title}
+                    story={moment.story}
+                    date={moment.visitedDate}
+                    visitedLocation={moment.visitedLocation}
+                    isFavorite={moment.isFavorite}
+                    onHandleViewStory={() => handleViewStory(moment)}
+                    onFavoriteClick={() => updateIsFavorite(moment)}
+                  />
+                ))}
+              </div>
+            ) : (
+              <EmptyCard
+                imgSrc={EmptyImg}
+                message="Begin your first Travel Story! Click the 'Add' button to capture your thoughts, ideas, and memories. Let`s get started!"
+              />
+            )}
           </section>
 
-          <aside className="w-[320px]" />
+          <DateFilter
+            dateRage={dateRage}
+            onHandleDaySelected={handleDaySelected}
+          />
         </div>
       </main>
 
@@ -155,6 +219,7 @@ export const Home = () => {
         className="model-box"
       >
         <AddEditTravelMoment
+          momentInfo={openViewModal.data}
           type={openAddEditModal.type}
           onClose={() => {
             setOpenAddEditModal({ isShow: false, type: "add", data: null });
@@ -189,8 +254,9 @@ export const Home = () => {
               isShow: true,
               type: "edit",
             }));
+            console.log("fjdkfjdf", openViewModal.data);
           }}
-          onDeleteClick={() => {}}
+          onDeleteClick={() => handleDeleteCapturedMoment(openViewModal.data)}
         />
       </Modal>
 
