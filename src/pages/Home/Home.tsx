@@ -9,6 +9,7 @@ import { ToastContainer, toast } from "react-toastify";
 import Modal from "react-modal";
 import { MdAdd } from "react-icons/md";
 import { AddEditTravelMoment } from "./AddEditTravelMoment";
+import { ViewTravelMoment } from "./ViewTravelMoment";
 
 interface MomentsProps {
   id: string;
@@ -33,6 +34,12 @@ export const Home = () => {
   const [openAddEditModal, setOpenAddEditModal] = useState<ModalProps>({
     isShow: false,
     type: "add",
+    data: null,
+  });
+
+  const [openViewModal, setOpenViewModal] = useState<ModalProps>({
+    isShow: false,
+    type: "view",
     data: null,
   });
   const navigate = useNavigate();
@@ -92,6 +99,11 @@ export const Home = () => {
     }
   };
 
+  // View de cada Story
+  const handleViewStory = (moment: MomentsProps) => {
+    setOpenViewModal({ isShow: true, type: "view", data: moment });
+  };
+
   useEffect(() => {
     getUserInfo();
     getAllCapturedMoments();
@@ -115,6 +127,7 @@ export const Home = () => {
                   visitedLocation={moment.visitedLocation}
                   isFavorite={moment.isFavorite}
                   onFavoriteClick={() => updateIsFavorite(moment)}
+                  onHandleViewStory={() => handleViewStory(moment)}
                 />
               ))}
             </div>
@@ -127,6 +140,7 @@ export const Home = () => {
           <aside className="w-[320px]" />
         </div>
       </main>
+
       {/* Add & Edit Captured Moment */}
       <Modal
         isOpen={openAddEditModal.isShow}
@@ -146,6 +160,37 @@ export const Home = () => {
             setOpenAddEditModal({ isShow: false, type: "add", data: null });
           }}
           getAllMoments={() => getAllCapturedMoments()}
+        />
+      </Modal>
+
+      {/* View Captured Moment */}
+      <Modal
+        isOpen={openViewModal.isShow}
+        onRequestClose={() => {}}
+        style={{
+          overlay: {
+            backgroundColor: "rgba(0,0,0,0.2)",
+            zIndex: 999,
+          },
+        }}
+        ariaHideApp={false}
+        className="model-box"
+      >
+        <ViewTravelMoment
+          momentInfo={openViewModal.data}
+          onClose={() => {
+            setOpenViewModal((prevState) => ({ ...prevState, isShow: false }));
+          }}
+          onEditClick={() => {
+            // prevState mostra o estado anterior ou seja tudo o que tinha no estado anterior mais o isShow:false
+            setOpenViewModal((prevState) => ({ ...prevState, isShow: false }));
+            setOpenAddEditModal((prevState) => ({
+              ...prevState,
+              isShow: true,
+              type: "edit",
+            }));
+          }}
+          onDeleteClick={() => {}}
         />
       </Modal>
 

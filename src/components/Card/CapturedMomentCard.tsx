@@ -10,6 +10,7 @@ interface CapturedMomentCardProps {
   visitedLocation: string[];
   isFavorite: boolean;
   onFavoriteClick: () => void;
+  onHandleViewStory: () => void;
 }
 
 const CapturedMomentCard = ({
@@ -20,11 +21,13 @@ const CapturedMomentCard = ({
   visitedLocation,
   isFavorite,
   onFavoriteClick,
+  onHandleViewStory,
 }: CapturedMomentCardProps) => {
   return (
     <article className="border rounded-lg overflow-hidden bg-white hover:shadow-lg hover:shadow-slate-200 transition-all ease-in-out relative cursor-pointer">
       <img
         className="w-full h-56 object-cover rounded-lg"
+        onClick={onHandleViewStory}
         src={imageUrl}
         alt={title}
       />
