@@ -1,69 +1,73 @@
-# React + TypeScript + Vite
+# Captured Moments Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A web application that allows users to register and preserve their travel memories by creating digital records of their journeys, including photos, stories, and locations visited.
 
-Currently, two official plugins are available:
+## 🚀 Technologies
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This project is built with:
 
-## Expanding the ESLint configuration
+- [React](https://reactjs.org/) - Frontend library
+- [TypeScript](https://www.typescriptlang.org/) - Programming language
+- [Vite](https://vitejs.dev/) - Build tool and development environment
+- [Tailwind CSS](https://tailwindcss.com/) - CSS framework
+- [Axios](https://axios-http.com/) - HTTP client
+- [React Router DOM](https://reactrouter.com/) - Routing
+- [React Modal](https://reactcommunity.org/react-modal/) - Modal component
+- [React Icons](https://react-icons.github.io/react-icons/) - Icon components
+- [React Day Picker](https://react-day-picker.js.org/) - Date picker component
+- [React Toastify](https://fkhadra.github.io/react-toastify/) - Toast notifications
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🔧 Setup
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+1. Clone the repository:
+```bash
+git clone https://github.com/tassioNS9/captured-moments-frontend.git
+cd captured-moments-frontend
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. Install dependencies:
+```bash
+npm install
+```
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+3. Start the development server:
+```bash
+npm run dev
+```
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 🏗️ Project Structure
+
+```
+src/
+  ├── api/           # API configuration and instances
+  ├── assets/        # Static assets (images, svgs)
+  ├── components/    # Reusable components
+  ├── pages/         # Application pages/routes
+  └── utils/         # Utility functions and helpers
+```
+
+## 🎯 Features
+
+- User authentication (login/signup)
+- Create, view, edit and delete travel memories
+- Add photos to travel memories
+- Add location tags
+- Mark memories as favorites
+- Filter memories by date range
+- Toast notifications for user feedback
+
+## 📝 Environment Variables
+
+Create a `.env` file in the root directory with:
+
+```
+VITE_API_BASE_URL=your_api_base_url
+```
+
+## 📦 Build
+
+To build the project for production:
+
+```bash
+npm run build
 ```

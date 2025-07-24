@@ -198,6 +198,7 @@ export const AddEditTravelMoment = ({
 
   // Lida com o efeito de digitação
   const typeText = (text: string) => {
+    //Esta função é chamada quando a IA retorna o texto gerado
     setIsIATyping(true);
     // Aqui ele já recebe a descrição do total do texto gerado pela IA
     setTypedText(text[0]);
@@ -211,6 +212,8 @@ export const AddEditTravelMoment = ({
       if (index === text.length - 1) {
         // quando chegar no limite do tamanho do texto vai parar
         clearInterval(interval);
+        // e vai limpar o estado de digitação
+        // para que possa ser digitado novamente
         setIsIATyping(false);
       }
     }, 30);
@@ -332,6 +335,7 @@ export const AddEditTravelMoment = ({
               value={typedText || moment}
               onChange={({ target }) => {
                 setMoment(target.value);
+                // Limpa o texto digitado quando o usuário começa a digitar fazendo com que o texto gerado pela IA possa ser substituído
                 setTypedText("");
               }}
             />
