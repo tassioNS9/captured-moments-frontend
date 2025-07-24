@@ -7,6 +7,8 @@ import { uploadImage } from "../../utils/uploadImage";
 import { axiosInstance } from "../../api/axiosInstance";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { ImSpinner2 } from "react-icons/im";
+import { BsStars } from "react-icons/bs";
 
 interface MomentsProps {
   id: string;
@@ -43,6 +45,10 @@ export const AddEditTravelMoment = ({
   const [visitedLocation, setVisitedLocation] = useState<string[]>(
     momentInfo?.visitedLocation || []
   );
+  const [loadingGenerateMomentIA, setLoadingGenerateMomentIA] =
+    useState<boolean>(false);
+  const [typedText, setTypedText] = useState<string>("");
+  const [isIATyping, setIsIATyping] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   // Adiciona um novo momento
@@ -94,7 +100,7 @@ export const AddEditTravelMoment = ({
 
       let updateMomentData = {
         title,
-        story: moment,
+        story: typedText || moment,
         imageUrl: memoryImg || "",
         visitedDate,
         visitedLocation,
@@ -157,6 +163,57 @@ export const AddEditTravelMoment = ({
     } else {
       addNewCapturedMoment();
     }
+  };
+
+  // Lida com a chamada da API com IA para gera o texto
+  const handleGenerateIA = async () => {
+    // Primeiro chama a requisição enquanto não termina outra não será chamada
+    if (loadingGenerateMomentIA) {
+      return;
+    }
+
+    try {
+      setLoadingGenerateMomentIA(true);
+      const response = await axiosInstance.post(`/ia`, { text: moment });
+
+      typeText(response.data);
+    } catch (error) {
+      toast.error("Text generate fail. Please try again later!");
+
+      if (axios.isAxiosError(error)) {
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.message
+        ) {
+          setError(error.response.data.message);
+        } else {
+          console.log("An unexpected error ocurred. Please try again.", error);
+        }
+      }
+    } finally {
+      setLoadingGenerateMomentIA(false);
+    }
+  };
+
+  // Lida com o efeito de digitação
+  const typeText = (text: string) => {
+    setIsIATyping(true);
+    // Aqui ele já recebe a descrição do total do texto gerado pela IA
+    setTypedText(text[0]);
+    let index = 0;
+
+    // montagem de texto
+    const interval = setInterval(() => {
+      setTypedText((prev) => prev + text[index]);
+      index++;
+
+      if (index === text.length - 1) {
+        // quando chegar no limite do tamanho do texto vai parar
+        clearInterval(interval);
+        setIsIATyping(false);
+      }
+    }, 30);
   };
 
   const handleDeleteMomentImg = async () => {
@@ -249,26 +306,40 @@ export const AddEditTravelMoment = ({
             <header className="flex justify-between">
               <label className="input-label">MOMENT</label>
 
-              <button></button>
+              <button
+                disabled={!moment || moment.length <= 5 || isIATyping}
+                className={`border p-0.5 rounded-md text-xl
+                  ${
+                    moment && !isIATyping && moment.length > 6
+                      ? "bg-slate-50 border-slate-200/50 text-violet-500 hover:bg-primary hover:text-white"
+                      : "bg-slate-100 border-slate-300 text-slate-400 cursor-not-allowed opacity-50"
+                  }
+              `}
+                onClick={handleGenerateIA}
+              >
+                {loadingGenerateMomentIA ? (
+                  <ImSpinner2 className="animate-spin" />
+                ) : (
+                  <BsStars />
+                )}
+              </button>
             </header>
             <textarea
+              disabled={loadingGenerateMomentIA || isIATyping}
               className="text-sm text-slate-950 outline-none bg-slate-50 p-2 rounded"
               placeholder="Your Moment"
               rows={10}
-              value={moment}
+              value={typedText || moment}
               onChange={({ target }) => {
                 setMoment(target.value);
+                setTypedText("");
               }}
             />
           </div>
 
           <div className="pt-3">
-            <label
-              htmlFor="
-            "
-            >
-              <TagInput tags={visitedLocation} setTag={setVisitedLocation} />
-            </label>
+            <label>VISITED LOCATIONS</label>
+            <TagInput tags={visitedLocation} setTag={setVisitedLocation} />
           </div>
         </div>
       </main>
